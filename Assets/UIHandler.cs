@@ -130,6 +130,12 @@ public class UIHandler : MonoBehaviour
     GameObject Connecting, Connecting_Sprite;
     Animator animatorConnecting;
 
+    [SerializeField]
+    GameObject _DefaultFridgeScreen;
+
+    [SerializeField]
+    GameObject _InsideView_Fridge;
+    Animator animatorInsideView_Fridge;
 
     public IEnumerator InitialInfoShow()
     {
@@ -183,6 +189,8 @@ public class UIHandler : MonoBehaviour
         animatorDoor_1 = Door_1.GetComponent<Animator>();
         animatorDoor_2 = Door_2.GetComponent<Animator>();
 
+
+        animatorInsideView_Fridge = _InsideView_Fridge.GetComponent<Animator>();
         animatorInsideFridge_Phone = _InsideFridge_Phone_SequenceSprite.GetComponent<Animator>();
         animatorInsideFridge_Fridge = _InsideFridge_Fridge_SequenceSprite.GetComponent<Animator>();
         animatorInsideFridge_Phone_Portrait = InsideFridge_Phone_SequenceSprite_Portrait.GetComponent<Animator>();
@@ -371,6 +379,7 @@ public class UIHandler : MonoBehaviour
         _FridgeScreen.SetActive(false);
         _FridgeTVInsideScreen.SetActive(false);
         _InsideFridge_Phone.SetActive(false);
+        _InsideView_Fridge.SetActive(false);
         //_FeaturePlay.SetActive(true);
 
         FamilyConnection_ZoomIn = FamilyConnection_ZoomOut = HomeControl_ZoomIn = HomeControl_ZoomOut = false;
@@ -380,6 +389,7 @@ public class UIHandler : MonoBehaviour
         ResetPosition = true;
         animatorDoor_1.Play("Still");
         animatorDoor_2.Play("Still");
+        animatorInsideView_Fridge.Play("Still");
         animatorInsideFridge_Phone.Play("Still");
         animatorInsideFridge_Fridge.Play("Still");
         animatorFridgeScreen.Play("Still");
@@ -466,6 +476,8 @@ public class UIHandler : MonoBehaviour
         _SmartView_Text.SetActive(false);
         _SmartView_Text_Portrait.SetActive(false);
         _SmartView_Device.SetActive(false);
+        _SmartView_ScreenChange_Phone.SetActive(false);
+        _SmartView_ScreenChange_Fridge.SetActive(false);
 
         _HomeEntertainmentScreen.SetActive(false);
         _HomeEntertainment_Text.SetActive(false);
@@ -477,7 +489,9 @@ public class UIHandler : MonoBehaviour
         Arrow_L.SetActive(false);
         Arrow_H.SetActive(false);
         Arrow_B.SetActive(false);
-       
+
+        _DefaultFridgeScreen.SetActive(true);
+
     }
 
     public void ResetDimensionAction()
@@ -573,6 +587,9 @@ public class UIHandler : MonoBehaviour
 
     public IEnumerator FoodManagementTransition()
     {
+        // _InsideView_Fridge.SetActive(false);
+        // animatorInsideView_Fridge.Play("Still");
+
         if (Screen.width > Screen.height || VirtualTextField)
         {
             /*
@@ -589,8 +606,24 @@ public class UIHandler : MonoBehaviour
 
             _SpaceMaxSeries_Header.SetActive(false);
             */
+
+            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
+            {
+                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.0f, 0.25f, -2.19f), t);
+                yield return null;
+
+                if (_Virtual_Camera.transform.position == new Vector3(0.0f, 0.25f, -2.19f))
+                    break;
+            }
+
             yield return new WaitForSeconds(1f);
 
+            _DefaultFridgeScreen.SetActive(false);
+
+            _InsideView_Fridge.SetActive(true);
+            animatorInsideView_Fridge.Play("InsideView_Fridge_Animation");
+
+            yield return new WaitForSeconds(2f);
             _InsideFridge_Phone.SetActive(true);
             animatorInsideFridge_Phone.Play("InsideFridge_Phone_Animation");
 
@@ -604,24 +637,17 @@ public class UIHandler : MonoBehaviour
                 yield return null;
             }
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(0.5f);
             
 
             Connecting.SetActive(true);
             Connecting.transform.localPosition = new Vector3(0.27f, 0.38f, -0.526123f);
             animatorConnecting.Play("Connecting_Animation");
 
-            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
-            {
-                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.04f, 0.1f, -2.43f), t);
-                yield return null;
+            
 
-                if (_Virtual_Camera.transform.position == new Vector3(0.04f, 0.1f, -2.43f))
-                    break;
-            }
-
-            yield return new WaitForSeconds(0.5f);
-            _FridgeTVInsideScreen.SetActive(true);
+            yield return new WaitForSeconds(3f);
+            // _FridgeTVInsideScreen.SetActive(true);
 
             Connecting.SetActive(false);
             yield return new WaitForSeconds(1f);
@@ -647,6 +673,7 @@ public class UIHandler : MonoBehaviour
             _FoodManagement_Text_AddOn.SetActive(true);
 
             _FridgeTVInsideScreen.SetActive(false);
+            _InsideView_Fridge.SetActive(false);
             _FridgeScreen_WithoutBottle.SetActive(true);
             yield return new WaitForSeconds(1f);
 
@@ -701,6 +728,11 @@ public class UIHandler : MonoBehaviour
             }
             */
 
+            _DefaultFridgeScreen.SetActive(false);
+
+            _InsideView_Fridge.SetActive(true);
+            animatorInsideView_Fridge.Play("InsideView_Fridge_Animation");
+
             // _SpaceMaxSeries_Header.SetActive(false);
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
             {
@@ -716,12 +748,12 @@ public class UIHandler : MonoBehaviour
             yield return new WaitForSeconds(0.9f);
 
             Connecting.SetActive(true);
-            Connecting.transform.localPosition = new Vector3(0.42f, 0.38f, -0.3f);
+            Connecting.transform.localPosition = new Vector3(0.415f, 0.38f, -0.3f);
             animatorConnecting.Play("Connecting_Animation");
 
             yield return new WaitForSeconds(0.8f);
-            _FridgeTVInsideScreen.SetActive(true);
-            yield return new WaitForSeconds(1.5f);
+            // _FridgeTVInsideScreen.SetActive(true);
+            yield return new WaitForSeconds(3f);
 
             Connecting.SetActive(false);
 
@@ -741,7 +773,8 @@ public class UIHandler : MonoBehaviour
             _FoodManagement_Text_Portrait.SetActive(false);
             _FoodManagement_Text_Portrait_AddOn.SetActive(true);
 
-            _FridgeTVInsideScreen.SetActive(false);
+            // _FridgeTVInsideScreen.SetActive(false);
+            _InsideView_Fridge.SetActive(false);
             _FridgeScreen_WithoutBottle.SetActive(true);
             yield return new WaitForSeconds(1f);
 
@@ -754,7 +787,7 @@ public class UIHandler : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
 
-
+        /*
         _InsideFridge_Fridge.SetActive(true);
 
         Object_1.SetActive(false);
@@ -789,6 +822,9 @@ public class UIHandler : MonoBehaviour
         Object_8.SetActive(true);
         Object_9.SetActive(true);
         Object_10.SetActive(true);
+        */
+
+
 
         /*
         if(Screen.width < Screen.height)
@@ -848,8 +884,6 @@ public class UIHandler : MonoBehaviour
 
     public IEnumerator FamilyConnectionTransition()
     {
-        _FridgeScreen.SetActive(true);
-        
 
         if (Screen.width > Screen.height || VirtualTextField)
         {
@@ -865,12 +899,8 @@ public class UIHandler : MonoBehaviour
                 yield return null;
             }
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1.5f);
 
-            PhoneConnection_SequenceSprite.SetActive(true);
-            // _FamilyConnection_Label.SetActive(false);
-
-            animatorPhoneConnection.Play("PhoneConnection_Animation");
 
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 500)
             {
@@ -880,6 +910,13 @@ public class UIHandler : MonoBehaviour
                 if (_Virtual_Camera.transform.position == new Vector3(0.18f, 0.3f, -1.8f))
                     break;
             }
+
+            PhoneConnection_SequenceSprite.SetActive(true);
+            // _FamilyConnection_Label.SetActive(false);
+
+            animatorPhoneConnection.Play("PhoneConnection_Animation");
+
+            yield return new WaitForSeconds(2f);
 
             Connecting.SetActive(true);
             Connecting.transform.localPosition = new Vector3(0.29f, 0.38f, -0.3f);
@@ -901,6 +938,9 @@ public class UIHandler : MonoBehaviour
             */
 
             yield return new WaitForSeconds(4f);
+
+            _DefaultFridgeScreen.SetActive(false);
+            _FridgeScreen.SetActive(true);
 
             animatorFridgeScreen.Play("FridgeScreen_Animation");
 
@@ -952,7 +992,7 @@ public class UIHandler : MonoBehaviour
             _FamilyConnection_Label.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
             _FamilyConnection_Label.SetActive(true);
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
 
 
             _FamilyConnection_Label.SetActive(false);
@@ -992,6 +1032,9 @@ public class UIHandler : MonoBehaviour
             }
 
             yield return new WaitForSeconds(3.5f);
+
+            _DefaultFridgeScreen.SetActive(false);
+            _FridgeScreen.SetActive(true);
 
             animatorFridgeScreen.Play("FridgeScreen_Animation");
             yield return new WaitForSeconds(4.1f);
@@ -1304,6 +1347,8 @@ public class UIHandler : MonoBehaviour
 
     public IEnumerator ExploreBixbyTransition()
     {
+        _DefaultFridgeScreen.SetActive(false);
+
         _HomeScreen.SetActive(true);
 
         if (Screen.width > Screen.height || VirtualTextField)
@@ -1456,6 +1501,7 @@ public class UIHandler : MonoBehaviour
 
     public IEnumerator MealPlannerTransition()
     {
+        _DefaultFridgeScreen.SetActive(false);
 
         _MealPlannerScreen.SetActive(true);
 
@@ -1463,10 +1509,10 @@ public class UIHandler : MonoBehaviour
         {
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
             {
-                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0f, 0.24f, -2.16f), t);
+                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0f, 0.33f, -1.82f), t);
                 yield return null;
 
-                if (_Virtual_Camera.transform.position == new Vector3(0f, 0.24f, -2.16f))
+                if (_Virtual_Camera.transform.position == new Vector3(0f, 0.33f, -1.82f))
                     break;
             }
 
@@ -1519,10 +1565,10 @@ public class UIHandler : MonoBehaviour
         {
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
             {
-                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.16f, 0.34f, -1.89f), t);
+                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.18f, 0.31f, -1.62f), t);
                 yield return null;
 
-                if (_Virtual_Camera.transform.position == new Vector3(0.16f, 0.34f, -1.89f))
+                if (_Virtual_Camera.transform.position == new Vector3(0.18f, 0.31f, -1.62f))
                     break;
             }
 
@@ -1588,7 +1634,7 @@ public class UIHandler : MonoBehaviour
     }
 
     [SerializeField]
-    GameObject _SmartViewScreen, _SmartView_Text, _SmartView_Device, _SmartView_Text_Portrait;
+    GameObject _SmartViewScreen, _SmartView_Text, _SmartView_Device, _SmartView_Text_Portrait, _SmartView_ScreenChange_Phone, _SmartView_ScreenChange_Fridge;
     Animator animatorSmartView;
 
     public IEnumerator SmartViewTransition()
@@ -1631,7 +1677,8 @@ public class UIHandler : MonoBehaviour
             Connecting.transform.localPosition = new Vector3(0.33f, 0.38f, -0.3f);
             animatorConnecting.Play("Connecting_Animation");
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(5f);
+            _DefaultFridgeScreen.SetActive(false);
             _SmartViewScreen.SetActive(true);
 
             yield return new WaitForSeconds(1f);
@@ -1644,7 +1691,13 @@ public class UIHandler : MonoBehaviour
                 yield return null;
             }
 
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(1.5f);
+            _SmartView_ScreenChange_Phone.SetActive(true);
+            yield return new WaitForSeconds(0.5f);
+            _SmartView_ScreenChange_Fridge.SetActive(true);
+            _SmartViewScreen.SetActive(false);
+
+            yield return new WaitForSeconds(5f);
             // HomeControl_ZoomOut = true;
 
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
@@ -1679,7 +1732,8 @@ public class UIHandler : MonoBehaviour
             Connecting.transform.localPosition = new Vector3(0.33f, 0.38f, -0.306f);
             animatorConnecting.Play("Connecting_Animation");
 
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(5f);
+            _DefaultFridgeScreen.SetActive(false);
             _SmartViewScreen.SetActive(true);
 
             yield return new WaitForSeconds(1f);
@@ -1692,7 +1746,13 @@ public class UIHandler : MonoBehaviour
                 yield return null;
             }
 
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(1f);
+            _SmartView_ScreenChange_Phone.SetActive(true);
+            yield return new WaitForSeconds(0.5f);
+            _SmartView_ScreenChange_Fridge.SetActive(true);
+            _SmartViewScreen.SetActive(false);
+
+            yield return new WaitForSeconds(5f);
             // HomeControl_ZoomOut = true;
 
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
@@ -1776,13 +1836,14 @@ public class UIHandler : MonoBehaviour
 
             _HomeEntertainment_Device.SetActive(true);
             animatorHomeEntertainment.Play("HomeEntertainment_Animation");
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(3.5f);
 
             Connecting.SetActive(true);
             Connecting.transform.localPosition = new Vector3(0.33f, 0.38f, -0.3f);
             animatorConnecting.Play("Connecting_Animation");
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(5f);
+            _DefaultFridgeScreen.SetActive(false);
             _HomeEntertainmentScreen.SetActive(true);
 
             yield return new WaitForSeconds(1f);
@@ -1824,13 +1885,14 @@ public class UIHandler : MonoBehaviour
 
             _HomeEntertainment_Device.SetActive(true);
             animatorHomeEntertainment.Play("HomeEntertainment_Animation");
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(3.5f);
 
             Connecting.SetActive(true);
             Connecting.transform.localPosition = new Vector3(0.33f, 0.38f, -0.306f);
             animatorConnecting.Play("Connecting_Animation");
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(5f);
+            _DefaultFridgeScreen.SetActive(false);
             _HomeEntertainmentScreen.SetActive(true);
 
             yield return new WaitForSeconds(1f);
