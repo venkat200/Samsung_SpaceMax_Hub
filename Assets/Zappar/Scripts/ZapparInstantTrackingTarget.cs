@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 using Zappar;
+using UnityEngine.EventSystems;
 
 public class ZapparInstantTrackingTarget : ZapparTrackingTarget, ZapparCamera.ICameraListener
 {
@@ -108,20 +109,34 @@ public class ZapparInstantTrackingTarget : ZapparTrackingTarget, ZapparCamera.IC
         }
         */
 
-        
+        /*
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            // Check if finger is over a UI element
+            if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+            {
+                Debug.Log("Touched the UI");
+            }
+        }
+        */
+
         if (Input.touchCount > 0)
         {
 	        theTouch = Input.GetTouch(0);
-            if(theTouch.phase == TouchPhase.Began)
+            // Check if finger is over a UI element
+            if (!EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
             {
-                startPosition = theTouch.position;
-                timeTouchBegan = Time.time; 
-            }
-	        if (theTouch.phase == TouchPhase.Ended)
-	        {		  
-                pinTry = true;
-                endPosition = theTouch.position;
-                timeTouchEnded = Time.time;
+                if (theTouch.phase == TouchPhase.Began)
+                {
+                    startPosition = theTouch.position;
+                    timeTouchBegan = Time.time;
+                }
+                if (theTouch.phase == TouchPhase.Ended)
+                {
+                    pinTry = true;
+                    endPosition = theTouch.position;
+                    timeTouchEnded = Time.time;
+                }
             }
         }
         // else if ((Time.time - timeTouchEnded > displayTime) && pinTry==true && (timeTouchEnded - timeTouchBegan < 1f))

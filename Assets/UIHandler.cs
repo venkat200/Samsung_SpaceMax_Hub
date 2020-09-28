@@ -209,6 +209,7 @@ public class UIHandler : MonoBehaviour
         animatorSpaceMax_Right = _SpaceMax_RightColumn.GetComponent<Animator>();
 
         animatorConnecting = Connecting_Sprite.GetComponent<Animator>();
+        animatorSmartView_FridgeScreen = _SmartViewScreen.GetComponent<Animator>();
 
         ObjectRotateScript = ResetDimension.GetComponent<ObjectRotate>();
     }
@@ -406,6 +407,7 @@ public class UIHandler : MonoBehaviour
         animatorFoodPlanner_Fridge.Play("Still");
         animatorSpaceMax_Left.Play("Still");
         animatorSpaceMax_Right.Play("Still");
+        animatorSmartView_FridgeScreen.Play("Still");
 
         // _SpaceMaxTechnology_Container.SetActive(false);
         _SpaceMax_LeftColumn.SetActive(false);
@@ -913,7 +915,7 @@ public class UIHandler : MonoBehaviour
             yield return new WaitForSeconds(1.5f);
 
 
-            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 500)
+            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 250)
             {
                 _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.18f, 0.3f, -1.8f), t);
                 yield return null;
@@ -1009,11 +1011,6 @@ public class UIHandler : MonoBehaviour
             _FamilyConnection_Label.SetActive(false);
 
 
-            PhoneConnection_SequenceSprite.SetActive(true);
-            _FamilyConnection_Text_Portrait.SetActive(true);
-
-            animatorPhoneConnection.Play("PhoneConnection_Animation");
-
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 500)
             {
                 _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.51f, 0.15f, -1.99f), t);
@@ -1022,6 +1019,14 @@ public class UIHandler : MonoBehaviour
                 if (_Virtual_Camera.transform.position == new Vector3(0.51f, 0.15f, -1.99f))
                     break;
             }
+
+
+            PhoneConnection_SequenceSprite.SetActive(true);
+            _FamilyConnection_Text_Portrait.SetActive(true);
+
+            animatorPhoneConnection.Play("PhoneConnection_Animation");
+            yield return new WaitForSeconds(2f);
+
 
             Connecting.SetActive(true);
             Connecting.transform.localPosition = new Vector3(0.32f, 0.38f, -0.306f);
@@ -1188,11 +1193,26 @@ public class UIHandler : MonoBehaviour
             _SpaceMax_RightColumn.SetActive(true);
 
             // _LargeSpace_Callout.SetActive(true);
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.9f);
 
             animatorSpaceMax_Left.Play("SpaceMax_Left_Animation");
             animatorSpaceMax_Right.Play("SpaceMax_Right_Animation");
 
+            yield return new WaitForSeconds(0.833f);
+            animatorSpaceMax_Left.Play("Still");
+            animatorSpaceMax_Right.Play("Still");
+            yield return new WaitForSeconds(0.2f);
+
+            animatorSpaceMax_Left.Play("SpaceMax_Left_Animation");
+            animatorSpaceMax_Right.Play("SpaceMax_Right_Animation");
+
+            yield return new WaitForSeconds(0.833f);
+            animatorSpaceMax_Left.Play("Still");
+            animatorSpaceMax_Right.Play("Still");
+            yield return new WaitForSeconds(0.2f);
+
+            animatorSpaceMax_Left.Play("SpaceMax_Left_Animation");
+            animatorSpaceMax_Right.Play("SpaceMax_Right_Animation");
             yield return new WaitForSeconds(5.5f);
 
             /*
@@ -1279,7 +1299,23 @@ public class UIHandler : MonoBehaviour
             _SpaceMax_RightColumn.SetActive(true);
 
             // _LargeSpace_Callout.SetActive(true);
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.9f);
+
+            animatorSpaceMax_Left.Play("SpaceMax_Left_Animation");
+            animatorSpaceMax_Right.Play("SpaceMax_Right_Animation");
+
+            yield return new WaitForSeconds(0.833f);
+            animatorSpaceMax_Left.Play("Still");
+            animatorSpaceMax_Right.Play("Still");
+            yield return new WaitForSeconds(0.2f);
+
+            animatorSpaceMax_Left.Play("SpaceMax_Left_Animation");
+            animatorSpaceMax_Right.Play("SpaceMax_Right_Animation");
+
+            yield return new WaitForSeconds(0.833f);
+            animatorSpaceMax_Left.Play("Still");
+            animatorSpaceMax_Right.Play("Still");
+            yield return new WaitForSeconds(0.2f);
 
             animatorSpaceMax_Left.Play("SpaceMax_Left_Animation");
             animatorSpaceMax_Right.Play("SpaceMax_Right_Animation");
@@ -1688,8 +1724,8 @@ public class UIHandler : MonoBehaviour
 
     [SerializeField]
     GameObject _SmartViewScreen, _SmartView_Text, _SmartView_Device, _SmartView_Text_Portrait, _SmartView_ScreenChange_Fridge;
-    Animator animatorSmartView;
-
+    Animator animatorSmartView, animatorSmartView_FridgeScreen;
+    
     public IEnumerator SmartViewTransition()
     {
         if (Screen.width > Screen.height || VirtualTextField)
@@ -1730,9 +1766,9 @@ public class UIHandler : MonoBehaviour
             Connecting.transform.localPosition = new Vector3(0.33f, 0.38f, -0.3f);
             animatorConnecting.Play("Connecting_Animation");
 
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(2.3f);
             _DefaultFridgeScreen.SetActive(false);
-            _SmartViewScreen.SetActive(true);
+            _SmartView_ScreenChange_Fridge.SetActive(true);
 
             yield return new WaitForSeconds(1.5f);
 
@@ -1744,9 +1780,12 @@ public class UIHandler : MonoBehaviour
                 yield return null;
             }
 
-            yield return new WaitForSeconds(2f);
-            _SmartView_ScreenChange_Fridge.SetActive(true);
-            _SmartViewScreen.SetActive(false);
+            yield return new WaitForSeconds(0.9f);
+            _SmartView_ScreenChange_Fridge.SetActive(false);
+            _SmartViewScreen.SetActive(true);
+            animatorSmartView_FridgeScreen.Play("SmartView_FridgeScreen_Animation");
+            // _SmartView_ScreenChange_Fridge.SetActive(true);
+            // _SmartViewScreen.SetActive(false);
 
             yield return new WaitForSeconds(5f);
             // HomeControl_ZoomOut = true;
@@ -1783,9 +1822,9 @@ public class UIHandler : MonoBehaviour
             Connecting.transform.localPosition = new Vector3(0.33f, 0.38f, -0.306f);
             animatorConnecting.Play("Connecting_Animation");
 
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(2.3f);
             _DefaultFridgeScreen.SetActive(false);
-            _SmartViewScreen.SetActive(true);
+            _SmartView_ScreenChange_Fridge.SetActive(true);
 
             yield return new WaitForSeconds(1.5f);
 
@@ -1797,9 +1836,12 @@ public class UIHandler : MonoBehaviour
                 yield return null;
             }
 
-            yield return new WaitForSeconds(2f);
-            _SmartView_ScreenChange_Fridge.SetActive(true);
-            _SmartViewScreen.SetActive(false);
+            yield return new WaitForSeconds(0.9f);
+            _SmartView_ScreenChange_Fridge.SetActive(false);
+            _SmartViewScreen.SetActive(true);
+            animatorSmartView_FridgeScreen.Play("SmartView_FridgeScreen_Animation");
+            // _SmartView_ScreenChange_Fridge.SetActive(true);
+            // _SmartViewScreen.SetActive(false);
 
             yield return new WaitForSeconds(5f);
             // HomeControl_ZoomOut = true;
