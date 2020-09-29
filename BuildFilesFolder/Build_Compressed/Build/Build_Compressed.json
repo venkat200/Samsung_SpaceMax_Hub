@@ -1,0 +1,19 @@
+{
+"companyName": "RB US",
+"productName": "Instant Tracker",
+"productVersion": "1.0",
+"dataUrl": "Build_Compressed.data.unityweb",
+"asmCodeUrl": "Build_Compressed.asm.code.unityweb",
+"asmMemoryUrl": "Build_Compressed.asm.memory.unityweb",
+"asmFrameworkUrl": "Build_Compressed.asm.framework.unityweb",
+"asmSymbolsUrl": "Build_Compressed.asm.symbols.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.4.8f1"
+}
