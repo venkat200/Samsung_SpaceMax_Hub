@@ -137,6 +137,10 @@ public class UIHandler : MonoBehaviour
     GameObject _InsideView_Fridge;
     Animator animatorInsideView_Fridge;
 
+    [SerializeField]
+    GameObject ScaleSelectionObject;
+    SceneZoom SceneZoomScript;
+
     public IEnumerator InitialInfoShow()
     {
         StartCoroutine(InfoButtonTransition());
@@ -149,6 +153,8 @@ public class UIHandler : MonoBehaviour
     void Start()
     {
         StartCoroutine(InitialInfoShow());
+
+        SceneZoomScript = ScaleSelectionObject.GetComponent<SceneZoom>();
 
         if (Screen.width > Screen.height)
         {
@@ -572,6 +578,7 @@ public class UIHandler : MonoBehaviour
             _Zappar_Camera.SetActive(VirtualTextField);
             _InstantTracker.SetActive(VirtualTextField);
 
+            SceneZoomScript.TouchScrollSensitivity = 1.5f;
             // _Pin_UnPin_ButtonCover_LandSpace.SetActive(false);
             // _Pin_UnPin_ButtonCover_Portrait.SetActive(false);
 
@@ -584,6 +591,10 @@ public class UIHandler : MonoBehaviour
             _Zappar_Camera.SetActive(VirtualTextField);
             _Virtual_Camera.SetActive(ARTextField);
             _InstantTracker.SetActive(VirtualTextField);
+
+            SceneZoomScript.TouchScrollSensitivity = 3f;
+
+            StartCoroutine(InitialInfoShow());
 
             // _Pin_UnPin_ButtonCover_LandSpace.SetActive(true);
             // _Pin_UnPin_ButtonCover_Portrait.SetActive(true);

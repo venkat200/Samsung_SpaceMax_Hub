@@ -3578,7 +3578,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &328553038
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14912,6 +14912,7 @@ MonoBehaviour:
   Connecting_Sprite: {fileID: 1295054052}
   _DefaultFridgeScreen: {fileID: 1636648697}
   _InsideView_Fridge: {fileID: 1848296557}
+  ScaleSelectionObject: {fileID: 1784993648}
   _SpaceMaxTechnology_Container: {fileID: 1387128802}
   _SpaceMax_LeftColumn: {fileID: 834857531}
   _SpaceMax_RightColumn: {fileID: 129070741}
@@ -14987,6 +14988,7 @@ MonoBehaviour:
   _SceneObject: {fileID: 625647779}
   ScaleRange: {x: 0.75, y: 2.5}
   ScrollSensitvity: 15
+  TouchScrollSensitivity: 1.5
   ScaleRangeSelectionObject: {fileID: 1784993648}
   startPositionSceneObject: {x: 0, y: 0, z: 0}
   startScaleSceneObject: {x: 0, y: 0, z: 0}
@@ -17193,7 +17195,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2051763066
 RectTransform:
   m_ObjectHideFlags: 0

@@ -11,7 +11,8 @@ public class SceneZoom : MonoBehaviour
     // ScaleRange.x defines min scale and ScaleRange.y defines max scale
     public Vector2 ScaleRange;
 
-    public float ScrollSensitvity = 2f;
+    public float ScrollSensitvity = 3f;
+    public float TouchScrollSensitivity = 1.5f;
 
     [SerializeField]
     GameObject ScaleRangeSelectionObject;
@@ -82,14 +83,14 @@ public class SceneZoom : MonoBehaviour
                 if (_diff_move > _diff_Start)
                 {
                     if (_SceneObject.transform.localScale.y < ScaleRange.y)
-                        _SceneObject.transform.localScale += new Vector3(1f, 1f, 1f) * Time.deltaTime * 0.5f;
+                        _SceneObject.transform.localScale += new Vector3(1f, 1f, 1f) * Time.deltaTime * 0.5f * TouchScrollSensitivity;
 
                     _diff_Start = _diff_move;
                 }
                 else if (_diff_move < _diff_Start)
                 {
                     if (_SceneObject.transform.localScale.y > ScaleRange.x)
-                        _SceneObject.transform.localScale -= new Vector3(1f, 1f, 1f) * Time.deltaTime * 0.5f;
+                        _SceneObject.transform.localScale -= new Vector3(1f, 1f, 1f) * Time.deltaTime * 0.5f * TouchScrollSensitivity;
 
                     _diff_Start = _diff_move;
                 }

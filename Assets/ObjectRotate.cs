@@ -78,7 +78,7 @@ public class ObjectRotate : MonoBehaviour
         float rotationX = Input.GetAxis("Mouse X") * rotationSpeed * Mathf.Deg2Rad;
         float rotationY = Input.GetAxis("Mouse Y") * rotationSpeed * Mathf.Deg2Rad;
 
-        if(rotationX > -0.12f && rotationX < 0.12f)
+        if(rotationX > -0.3f && rotationX < 0.3f)
         {
             transform.RotateAround(Vector3.up, -rotationX);
             // transform.RotateAround(Vector3.right, rotationY);
