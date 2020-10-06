@@ -56,6 +56,8 @@ public class ZapparInstantTrackingTarget : ZapparTrackingTarget, ZapparCamera.IC
         // SceneObject.transform.localScale = sceneZoomClass.startScaleSceneObject + new Vector3(4f, 4f, 4f);
         SceneObject.transform.localScale = new Vector3(4f, 4f, 4f);
         SceneObject.transform.localPosition = sceneZoomClass.startPositionSceneObject + new Vector3(0f, -0.8f, 5f);
+
+        LoadingBar.SetActive(true);
     }
 
     public void OnZapparInitialised(IntPtr pipeline) 
