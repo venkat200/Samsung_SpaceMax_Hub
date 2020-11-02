@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UIHandler : MonoBehaviour
 {
     [SerializeField]
-    GameObject _Zappar_Camera, _InstantTracker, _Virtual_Camera;
+    public GameObject _Zappar_Camera, _InstantTracker, _Virtual_Camera;
 
     [SerializeField]
     GameObject _ModelSphere;
@@ -23,11 +23,11 @@ public class UIHandler : MonoBehaviour
 
     [SerializeField]
     GameObject _FoodManagement_Icon, _FoodManagement_Hide_Icon, _FamilyConnection_Icon, _FamilyConnection_Hide_Icon,
-               _HomeConnection_Icon, _HomeConnection_Hide_Icon, _SpaceMaxTechnology_Icon, _SpaceMaxTechnology_Hide_Icon;
+               _HomeConnection_Icon, _HomeConnection_Hide_Icon, _SpaceMaxTechnology_Icon, _SpaceMaxTechnology_Hide_Icon, _AllaroundTechnology_Icon, _AllaroundTechnology_Hide_Icon;
 
     [SerializeField]
     GameObject _FoodManagement_Icon_Portrait, _FoodManagement_Hide_Icon_Portrait, _FamilyConnection_Icon_Portrait, _FamilyConnection_Hide_Icon_Portrait,
-               _HomeConnection_Icon_Portrait, _HomeConnection_Hide_Icon_Portrait, _SpaceMaxTechnology_Icon_Portrait, _SpaceMaxTechnology_Hide_Icon_Portrait;
+               _HomeConnection_Icon_Portrait, _HomeConnection_Hide_Icon_Portrait, _SpaceMaxTechnology_Icon_Portrait, _SpaceMaxTechnology_Hide_Icon_Portrait, _AllaroundTechnology_Icon_Portrait, _AllaroundTechnology_Hide_Icon_Portrait;
 
     [SerializeField]
     GameObject _SpaceMaxSeries_Header, _ViewInside_Header;
@@ -97,13 +97,16 @@ public class UIHandler : MonoBehaviour
     public GameObject SceneObject;
 
     bool resetScaleTransform = false;
+    bool ResetSceneObjectPosition = false;
+    bool ResetModelSphereObjectPosition = false;
+
 
     Animator animatorPhoneConnection;
     [SerializeField]
     GameObject PhoneConnection_SequenceSprite;
 
     [SerializeField]
-    GameObject _LargeSpace_Callout, _StockUp_Callout;
+    GameObject _LargeSpace_Callout, _StockUp_Callout, _allAround_callout;
     [SerializeField]
     GameObject _SpaceFit, _SpaceFit_Extended;
     [SerializeField]
@@ -114,7 +117,7 @@ public class UIHandler : MonoBehaviour
     GameObject _InstantSharing_Header, _InstantSharing_Header_Portrait;
    
     [SerializeField]
-    GameObject _LargeSpace_Callout_Portrait, _StockUp_Callout_Portrait;
+    GameObject _LargeSpace_Callout_Portrait, _StockUp_Callout_Portrait, _allAround_callout_Potrait;
 
     [SerializeField]
     GameObject _Stock_1, _Stock_2, _Stock_3, _Stock_4, _Stock_5, _Stock_6, _Stock_7, _Stock_8;
@@ -138,23 +141,49 @@ public class UIHandler : MonoBehaviour
     Animator animatorInsideView_Fridge;
 
     [SerializeField]
-    GameObject ScaleSelectionObject;
+    GameObject SceneZoomObject;
     SceneZoom SceneZoomScript;
 
+    [SerializeField]
+    GameObject ZapparInstantTrackerObject;
+    ZapparInstantTrackingTarget ZapparInstantTrackerScript;
+
+    // [SerializeField]
+    // GameObject gameObjectContainingARVerticalShift;
+    // ShiftPositionSceneObject ShiftPositionSceneObjectScript;
+
+    [SerializeField]
+    GameObject ArrowContainer;
+    public GameObject _capacityCallout_LandScape;
+    public GameObject _capacityCallout_Portrait;
+
+    public static UIHandler Instance;
+   
     public IEnumerator InitialInfoShow()
     {
+        if (VirtualTextField)
+        {
+            yield return new WaitForSeconds(2f);
+        }
         StartCoroutine(InfoButtonTransition());
-        yield return new WaitForSeconds(3f);
-        StartCoroutine(InfoButtonTransition());
+       
+        yield return new WaitForSeconds(2f);
+
+        if (clickInfo)
+        {
+            StartCoroutine(InfoButtonTransition());
+        }
     }
 
 
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(InitialInfoShow());
+        // StartCoroutine(InitialInfoShow());
 
-        SceneZoomScript = ScaleSelectionObject.GetComponent<SceneZoom>();
+        SceneZoomScript = SceneZoomObject.GetComponent<SceneZoom>();
+        ZapparInstantTrackerScript = ZapparInstantTrackerObject.GetComponent<ZapparInstantTrackingTarget>();
+        // ShiftPositionSceneObjectScript = gameObjectContainingARVerticalShift.GetComponent<ShiftPositionSceneObject>();
 
         if (Screen.width > Screen.height)
         {
@@ -218,6 +247,11 @@ public class UIHandler : MonoBehaviour
         animatorSmartView_FridgeScreen = _SmartViewScreen.GetComponent<Animator>();
 
         ObjectRotateScript = ResetDimension.GetComponent<ObjectRotate>();
+
+        if (GoogleAnalyticsAdapter.Instance != null)
+        {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("Pageview", "Viewed");
+        }
     }
 
     
@@ -244,8 +278,8 @@ public class UIHandler : MonoBehaviour
 
             initialPosition = new Vector3(0, 0f, -3.15f);
 
-            InfoPanel_Portrait.SetActive(false);
-            InfoPanel_Landscape.SetActive(true);
+            // InfoPanel_Portrait.SetActive(false);
+            // InfoPanel_Landscape.SetActive(true);
 
             if (VirtualTextField)
             {
@@ -257,6 +291,33 @@ public class UIHandler : MonoBehaviour
                 _Panel_Portrait_Close.SetActive(false);
                 _Panel_LandScape_Close.SetActive(true);
             }
+
+            
+            if (VirtualTextField)
+            {
+                _Panel_LandScape.GetComponent<RectTransform>().localPosition = new Vector3(0f, -280f, 0f);
+                _CloseHomeConnectionIcon_Portrait.GetComponent<RectTransform>().localPosition = new Vector3(0f, -800f, 0f);
+
+
+                if (ZapparInstantTrackerScript.ARPinned)
+                {
+                    _Panel_LandScape.SetActive(true);
+                    _Panel_Portrait_Close.SetActive(true);
+                }
+                else
+                {
+                    _Panel_LandScape.SetActive(false);
+                    _Panel_Portrait_Close.SetActive(false);
+                }
+                
+            }
+            else
+            {
+                _Panel_LandScape.GetComponent<RectTransform>().localPosition = new Vector3(0f, -220f, 0f);
+                _CloseHomeConnectionIcon_Portrait.GetComponent<RectTransform>().localPosition = new Vector3(0f, 0f, 0f);
+
+            }
+
         }
         else
         {
@@ -280,8 +341,8 @@ public class UIHandler : MonoBehaviour
 
             initialPosition = new Vector3(0, -0.38f, -3.15f);
 
-            InfoPanel_Landscape.SetActive(false);
-            InfoPanel_Portrait.SetActive(true);
+            // InfoPanel_Landscape.SetActive(false);
+            // InfoPanel_Portrait.SetActive(true);
         }
 
         /*
@@ -315,7 +376,6 @@ public class UIHandler : MonoBehaviour
                 FamilyConnection_ZoomOut = false;
             }
         }
-
 
         if (HomeControl_ZoomIn == true && !(FamilyConnection_ZoomIn && FamilyConnection_ZoomOut && HomeControl_ZoomOut && ResetPosition))
         {
@@ -372,6 +432,37 @@ public class UIHandler : MonoBehaviour
                 resetScaleTransform = false;
             }
         }
+
+        if (ResetSceneObjectPosition == true)
+        {
+            SceneObject.transform.localPosition = Vector3.MoveTowards(SceneObject.transform.localPosition, new Vector3(0.11f, 0.034f, -0.26f), 5 * Time.deltaTime);
+
+            if (SceneObject.transform.localPosition == new Vector3(0.11f, 0.034f, -0.26f))
+            {
+                ResetSceneObjectPosition = false;
+            }
+        }
+
+        if (ResetModelSphereObjectPosition == true && VirtualTextField)
+        {
+            _ModelSphere.transform.localPosition = Vector3.MoveTowards(_ModelSphere.transform.localPosition, new Vector3(0f, -0.6745458f, -0.3431641f), 5 * Time.deltaTime);
+
+            if (_ModelSphere.transform.localPosition == new Vector3(0f, -0.6745458f, -0.3431641f)) //-0.1097156f (X Value old)
+            {
+                ResetModelSphereObjectPosition = false;
+            }
+        }
+
+        if (ResetModelSphereObjectPosition == true && !VirtualTextField)
+        {
+            _ModelSphere.transform.localPosition = Vector3.MoveTowards(_ModelSphere.transform.localPosition, new Vector3(-0.1097156f, -0.6745458f, -0.3431641f), 5 * Time.deltaTime);
+
+            if (_ModelSphere.transform.localPosition == new Vector3(-0.1097156f, -0.6745458f, -0.3431641f))
+            {
+                ResetModelSphereObjectPosition = false;
+            }
+        }
+
     }
 
     IEnumerator resetTransformation()
@@ -383,7 +474,12 @@ public class UIHandler : MonoBehaviour
     public void ResetActions()
     {
         // StartCoroutine(resetTransformation());
-        resetScaleTransform = true;
+        if (!VirtualTextField)
+        {
+            resetScaleTransform = true;
+            ResetSceneObjectPosition = true;
+            ResetModelSphereObjectPosition = true;
+        }
 
         _AfterNote.SetActive(false);
         _BixbyConnection.SetActive(false);
@@ -414,6 +510,8 @@ public class UIHandler : MonoBehaviour
         animatorSpaceMax_Left.Play("Still");
         animatorSpaceMax_Right.Play("Still");
         animatorSmartView_FridgeScreen.Play("Still");
+
+        ArrowContainer.SetActive(false);
 
         // _SpaceMaxTechnology_Container.SetActive(false);
         _SpaceMax_LeftColumn.SetActive(false);
@@ -509,8 +607,18 @@ public class UIHandler : MonoBehaviour
         Arrow_H.SetActive(false);
         Arrow_B.SetActive(false);
 
+        ArrowBack_L.SetActive(false);
+        ArrowBack_H.SetActive(false);
+        ArrowBack_B.SetActive(false);
+
         _DefaultFridgeScreen.SetActive(true);
 
+        _allAround_callout.SetActive(false);
+        _allAround_callout_Potrait.SetActive(false);
+        InsideItems_1.SetActive(false);
+        InsideItems_2.SetActive(false);
+        InsideItems_3.SetActive(false);
+        Fog_Animation.SetActive(false);
     }
 
     public void ResetDimensionAction()
@@ -560,10 +668,12 @@ public class UIHandler : MonoBehaviour
 
     public void OnARButtonClicked()
     {
-        ResetActions();
-
         ARTextField = !ARTextField;
         VirtualTextField = !VirtualTextField;
+
+        ResetActions();
+        Door_1.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+        Door_2.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
 
         _Virtual_Camera.SetActive(true);
         _Zappar_Camera.SetActive(true);
@@ -578,13 +688,26 @@ public class UIHandler : MonoBehaviour
             _Zappar_Camera.SetActive(VirtualTextField);
             _InstantTracker.SetActive(VirtualTextField);
 
-            SceneZoomScript.TouchScrollSensitivity = 1.5f;
+            SceneZoomScript.TouchScaleSensitivityFactor = 1.5f;
             // _Pin_UnPin_ButtonCover_LandSpace.SetActive(false);
             // _Pin_UnPin_ButtonCover_Portrait.SetActive(false);
 
             SceneObject.transform.localScale = new Vector3(1f, 1f, 1f);
             SceneObject.transform.localPosition = new Vector3(0.1097156f, 0.03454585f, -0.2568359f);
             SceneObject.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+
+            _ModelSphere.transform.localPosition = new Vector3(-0.1097156f, -0.6745458f, -0.3431641f);
+
+            _ARInstruction_Panel.SetActive(false);
+            ReadInstruction_Button.SetActive(false);
+            Skip_Button.SetActive(false);
+            PlaceFloor_Button.SetActive(false);
+            Zoom_Button.SetActive(false);
+            Tap_Button.SetActive(false);
+
+            _LoadingBar.SetActive(false);
+            RefrigeratorTransparent.SetActive(false);
+            RefrigeratorOriginal.SetActive(true);
         }
         else
         {
@@ -592,28 +715,56 @@ public class UIHandler : MonoBehaviour
             _Virtual_Camera.SetActive(ARTextField);
             _InstantTracker.SetActive(VirtualTextField);
 
-            SceneZoomScript.TouchScrollSensitivity = 3f;
-
-            StartCoroutine(InitialInfoShow());
-
+            // StartCoroutine(InitialInfoShow());
+            SceneZoomScript.TouchScaleSensitivityFactor = 0f;
             // _Pin_UnPin_ButtonCover_LandSpace.SetActive(true);
             // _Pin_UnPin_ButtonCover_Portrait.SetActive(true);
 
             SceneObject.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            _ModelSphere.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+
+            _ModelSphere.transform.localPosition = new Vector3(0f, -0.6745458f, -0.3431641f);
+
+
+            _ARInstruction_Panel.SetActive(true);
+            ReadInstruction_Button.SetActive(false);
+            Skip_Button.SetActive(false);
+            PlaceFloor_Button.SetActive(false);
+            Zoom_Button.SetActive(true);
+            Tap_Button.SetActive(false);
+
+            _LoadingBar.SetActive(false);
+            RefrigeratorTransparent.SetActive(false);
+            RefrigeratorOriginal.SetActive(false);
         }
         // Camera Switch
 
         _AR_Button_Icon.SetActive(ARTextField);
         _Virtual_Button_Icon.SetActive(VirtualTextField);
+
+
+        if(GoogleAnalyticsAdapter.Instance != null)
+        {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("AR_Button","Clicked");
+        }
     }
 
+    IEnumerator ArrowTransition()
+    {
+        ArrowContainer.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        ArrowContainer.SetActive(false);
+    }
 
 
     public IEnumerator FoodManagementTransition()
     {
         // _InsideView_Fridge.SetActive(false);
         // animatorInsideView_Fridge.Play("Still");
-
+        if (VirtualTextField)
+        {
+            StartCoroutine(ArrowTransition());
+        }
         if (Screen.width > Screen.height || VirtualTextField)
         {
             /*
@@ -889,6 +1040,8 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon.SetActive(true);
         _SpaceMaxTechnology_Icon.SetActive(false);
         _SpaceMaxTechnology_Hide_Icon.SetActive(true);
+        _AllaroundTechnology_Icon.SetActive(false);
+        _AllaroundTechnology_Hide_Icon.SetActive(true);
 
         _FoodManagement_Icon_Portrait.SetActive(true);
         _FoodManagement_Hide_Icon_Portrait.SetActive(false);
@@ -898,16 +1051,27 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon_Portrait.SetActive(true);
         _SpaceMaxTechnology_Icon_Portrait.SetActive(false);
         _SpaceMaxTechnology_Hide_Icon_Portrait.SetActive(true);
+        _AllaroundTechnology_Icon_Portrait.SetActive(false);
+        _AllaroundTechnology_Hide_Icon_Portrait.SetActive(true);
 
         ResetActions();
         ResetDimensionAction();
 
         StartCoroutine(FoodManagementTransition());
+
+         if(GoogleAnalyticsAdapter.Instance != null)
+        {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("FoodManagement_Button","Clicked");
+        }
     }
 
 
     public IEnumerator FamilyConnectionTransition()
     {
+        if (VirtualTextField)
+        {
+            StartCoroutine(ArrowTransition());
+        }
 
         if (Screen.width > Screen.height || VirtualTextField)
         {
@@ -928,10 +1092,11 @@ public class UIHandler : MonoBehaviour
 
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 250)
             {
-                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.18f, 0.3f, -1.8f), t);
+                // _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.18f, 0.3f, -1.8f), t);
+                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0f, 0.27f, -2.14f), t);
                 yield return null;
 
-                if (_Virtual_Camera.transform.position == new Vector3(0.18f, 0.3f, -1.8f))
+                if (_Virtual_Camera.transform.position == new Vector3(0f, 0.27f, -2.14f))
                     break;
             }
 
@@ -1022,7 +1187,7 @@ public class UIHandler : MonoBehaviour
             _FamilyConnection_Label.SetActive(false);
 
 
-            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 500)
+            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
             {
                 _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.51f, 0.15f, -1.99f), t);
                 yield return null;
@@ -1066,7 +1231,7 @@ public class UIHandler : MonoBehaviour
             animatorFridgeScreen.Play("FridgeScreen_Animation");
             yield return new WaitForSeconds(4.1f);
 
-            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 500)
+            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
             {
                 _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, initialPosition, t);
                 yield return null;
@@ -1094,6 +1259,8 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon.SetActive(true);
         _SpaceMaxTechnology_Icon.SetActive(false);
         _SpaceMaxTechnology_Hide_Icon.SetActive(true);
+        _AllaroundTechnology_Icon.SetActive(false);
+        _AllaroundTechnology_Hide_Icon.SetActive(true);
 
         _FoodManagement_Icon_Portrait.SetActive(false);
         _FoodManagement_Hide_Icon_Portrait.SetActive(true);
@@ -1103,8 +1270,15 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon_Portrait.SetActive(true);
         _SpaceMaxTechnology_Icon_Portrait.SetActive(false);
         _SpaceMaxTechnology_Hide_Icon_Portrait.SetActive(true);
+        _AllaroundTechnology_Icon_Portrait.SetActive(false);
+        _AllaroundTechnology_Hide_Icon_Portrait.SetActive(true);
 
         StartCoroutine(FamilyConnectionTransition());
+
+         if(GoogleAnalyticsAdapter.Instance != null)
+        {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("FamilyConnection_Button","Clicked");
+        }
     }
 
 
@@ -1122,6 +1296,8 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon.SetActive(false);
         _SpaceMaxTechnology_Icon.SetActive(false);
         _SpaceMaxTechnology_Hide_Icon.SetActive(false);
+        _AllaroundTechnology_Icon.SetActive(false);
+        _AllaroundTechnology_Hide_Icon.SetActive(false);
 
         _ExploreBixby_Icon.SetActive(true);
         _ExploreBixby_Icon_Hide.SetActive(false);
@@ -1133,7 +1309,6 @@ public class UIHandler : MonoBehaviour
         _HomeEntertainment_Icon_Hide.SetActive(false);
         _CloseHomeConnectionIcon.SetActive(true);
 
-
         _FoodManagement_Icon_Portrait.SetActive(false);
         _FoodManagement_Hide_Icon_Portrait.SetActive(false);
         _FamilyConnection_Icon_Portrait.SetActive(false);
@@ -1142,6 +1317,8 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon_Portrait.SetActive(false);
         _SpaceMaxTechnology_Icon_Portrait.SetActive(false);
         _SpaceMaxTechnology_Hide_Icon_Portrait.SetActive(false);
+        _AllaroundTechnology_Icon_Portrait.SetActive(false);
+        _AllaroundTechnology_Hide_Icon_Portrait.SetActive(false);
 
         _ExploreBixby_Icon_Portrait.SetActive(true);
         _ExploreBixby_Icon_Hide_Portrait.SetActive(false);
@@ -1165,6 +1342,12 @@ public class UIHandler : MonoBehaviour
             _CloseHomeControlButton_Panel_Portrait.SetActive(true);
         }
         */
+
+
+         if(GoogleAnalyticsAdapter.Instance != null)
+        {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("HomeControl_Button","Clicked");
+        }
     }
 
     [SerializeField]
@@ -1173,6 +1356,11 @@ public class UIHandler : MonoBehaviour
 
     public IEnumerator SpaceMaxTechnologyTransition()
     {
+        if (VirtualTextField)
+        {
+            StartCoroutine(ArrowTransition());
+        }
+
         _Stock_1.SetActive(false);
         _Stock_2.SetActive(false);
         _Stock_3.SetActive(false);
@@ -1198,7 +1386,7 @@ public class UIHandler : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             OnDoorOpenCloseClicked();
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.15f);
             // _SpaceMaxTechnology_Container.SetActive(true);
             _SpaceMax_LeftColumn.SetActive(true);
             _SpaceMax_RightColumn.SetActive(true);
@@ -1272,13 +1460,13 @@ public class UIHandler : MonoBehaviour
             */
 
             OnDoorOpenCloseClicked();
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSeconds(0.75f);
             // _SpaceMaxTechnology_Container.SetActive(false);
             _SpaceMax_LeftColumn.SetActive(false);
             _SpaceMax_RightColumn.SetActive(false);
 
             _StockUp_Callout.SetActive(false);
-
+            
         }
         else
         {
@@ -1304,7 +1492,7 @@ public class UIHandler : MonoBehaviour
                 yield return null;
             }
             */
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.15f);
             //_SpaceMaxTechnology_Container.SetActive(true);
             _SpaceMax_LeftColumn.SetActive(true);
             _SpaceMax_RightColumn.SetActive(true);
@@ -1387,13 +1575,15 @@ public class UIHandler : MonoBehaviour
             yield return new WaitForSeconds(4);
             */
 
+
             OnDoorOpenCloseClicked();
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSeconds(0.75f);
             // _SpaceMaxTechnology_Container.SetActive(false);
             _SpaceMax_LeftColumn.SetActive(false);
             _SpaceMax_RightColumn.SetActive(false);
 
             _StockUp_Callout_Portrait.SetActive(false);
+       
         }
 
         _FeaturePlay.SetActive(false);
@@ -1412,6 +1602,8 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon.SetActive(true);
         _SpaceMaxTechnology_Icon.SetActive(true);
         _SpaceMaxTechnology_Hide_Icon.SetActive(false);
+        _AllaroundTechnology_Icon.SetActive(false);
+        _AllaroundTechnology_Hide_Icon.SetActive(true);
 
         _FoodManagement_Icon_Portrait.SetActive(false);
         _FoodManagement_Hide_Icon_Portrait.SetActive(true);
@@ -1421,12 +1613,114 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon_Portrait.SetActive(true);
         _SpaceMaxTechnology_Icon_Portrait.SetActive(true);
         _SpaceMaxTechnology_Hide_Icon_Portrait.SetActive(false);
+        _AllaroundTechnology_Icon_Portrait.SetActive(false);
+        _AllaroundTechnology_Hide_Icon_Portrait.SetActive(true);
 
 
         StartCoroutine(SpaceMaxTechnologyTransition());
+
+         if(GoogleAnalyticsAdapter.Instance != null)
+        {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("SpaceMaxTechnology_Button","Clicked");
+        }
     }
 
 
+    [SerializeField]
+    GameObject InsideItems_1, InsideItems_2, InsideItems_3, Fog_Animation;
+
+    IEnumerator AllaroundTechnologyTransition()
+    {
+        if (VirtualTextField)
+        {
+            StartCoroutine(ArrowTransition());
+        }
+
+        if (Screen.width > Screen.height || VirtualTextField)
+        {
+            _allAround_callout.SetActive(true);
+            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime)
+            {
+                Color newColor = new Color(1, 1, 1, Mathf.Lerp(0, 1, t));
+                _allAround_callout.GetComponent<SpriteRenderer>().color = newColor;
+                yield return null;
+            }
+        }
+        else
+        {
+            _allAround_callout_Potrait.SetActive(true);
+            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 500)
+            {
+                _Virtual_Camera.transform.localPosition = Vector3.MoveTowards(_Virtual_Camera.transform.localPosition, new Vector3(0f, -0.18f - 0.18f, -3.15f), t);
+                yield return null;
+
+                if (_Virtual_Camera.transform.localPosition == new Vector3(0f, -0.18f - 0.18f, -3.15f))
+                    break;
+            }
+
+        }
+
+        
+
+        OnDoorOpenCloseClicked();
+
+        yield return new WaitForSeconds(0.15f);
+        InsideItems_1.SetActive(true);
+        InsideItems_2.SetActive(true);
+        InsideItems_3.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        Fog_Animation.SetActive(true);
+
+        yield return new WaitForSeconds(5f);
+
+        OnDoorOpenCloseClicked();
+
+        yield return new WaitForSeconds(0.6f);
+        Fog_Animation.SetActive(false);
+        yield return new WaitForSeconds(0.15f);
+        InsideItems_1.SetActive(false);
+        InsideItems_2.SetActive(false);
+        InsideItems_3.SetActive(false);
+   
+    }
+
+    public void OnAllAroundCoolingClicked()
+    {
+        ResetActions();
+        ResetDimensionAction();
+
+        _FoodManagement_Icon.SetActive(false);
+        _FoodManagement_Hide_Icon.SetActive(true);
+        _FamilyConnection_Icon.SetActive(false);
+        _FamilyConnection_Hide_Icon.SetActive(true);
+        _HomeConnection_Icon.SetActive(false);
+        _HomeConnection_Hide_Icon.SetActive(true);
+        _SpaceMaxTechnology_Icon.SetActive(false);
+        _SpaceMaxTechnology_Hide_Icon.SetActive(true);
+        _AllaroundTechnology_Icon.SetActive(true);
+        _AllaroundTechnology_Hide_Icon.SetActive(false);
+
+        _FoodManagement_Icon_Portrait.SetActive(false);
+        _FoodManagement_Hide_Icon_Portrait.SetActive(true);
+        _FamilyConnection_Icon_Portrait.SetActive(false);
+        _FamilyConnection_Hide_Icon_Portrait.SetActive(true);
+        _HomeConnection_Icon_Portrait.SetActive(false);
+        _HomeConnection_Hide_Icon_Portrait.SetActive(true);
+        _SpaceMaxTechnology_Icon_Portrait.SetActive(false);
+        _SpaceMaxTechnology_Hide_Icon_Portrait.SetActive(true);
+        _AllaroundTechnology_Icon_Portrait.SetActive(true);
+        _AllaroundTechnology_Hide_Icon_Portrait.SetActive(false);
+
+
+        StartCoroutine(AllaroundTechnologyTransition());
+
+        if (GoogleAnalyticsAdapter.Instance != null)
+        {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("AllAroundCooling_Button", "Clicked");
+        }
+    }
+
+    
 
     [SerializeField]
     GameObject _ExploreBixby_Icon, _ExploreBixby_Icon_Hide, _MealPlanner_Icon, _MealPlanner_Icon_Hide, _SmartView_Icon, _SmartView_Icon_Hide, _HomeEntertainment_Icon, _HomeEntertainment_Icon_Hide, _CloseHomeConnectionIcon;
@@ -1439,6 +1733,10 @@ public class UIHandler : MonoBehaviour
 
     public IEnumerator ExploreBixbyTransition()
     {
+        if (VirtualTextField)
+        {
+            StartCoroutine(ArrowTransition());
+        }
         _DefaultFridgeScreen.SetActive(false);
 
         _HomeScreen.SetActive(true);
@@ -1593,7 +1891,10 @@ public class UIHandler : MonoBehaviour
 
     public IEnumerator MealPlannerTransition()
     {
-
+        if (VirtualTextField)
+        {
+            StartCoroutine(ArrowTransition());
+        }
         // _MealPlannerScreen.SetActive(true);
 
         if (Screen.width > Screen.height || VirtualTextField)
@@ -1628,11 +1929,7 @@ public class UIHandler : MonoBehaviour
 
             // yield return new WaitForSeconds(0.5f);
 
-            yield return new WaitForSeconds(6f);
-
-            _MealPlanner_Food.SetActive(true);
-            animatorMealMaker.Play("MealPlanner_Animation");
-            yield return new WaitForSeconds(4f);
+            yield return new WaitForSeconds(5f);
 
             _MealPlanner_Text.SetActive(true);
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime)
@@ -1641,6 +1938,13 @@ public class UIHandler : MonoBehaviour
                 _MealPlanner_Text.GetComponent<SpriteRenderer>().color = newColor;
                 yield return null;
             }
+
+            yield return new WaitForSeconds(2f);
+
+            _MealPlanner_Food.SetActive(true);
+            animatorMealMaker.Play("MealPlanner_Animation");
+            yield return new WaitForSeconds(4f);
+
 
             yield return new WaitForSeconds(2f);
             // HomeControl_ZoomOut = true;
@@ -1739,14 +2043,20 @@ public class UIHandler : MonoBehaviour
     
     public IEnumerator SmartViewTransition()
     {
+        if (VirtualTextField)
+        {
+            StartCoroutine(ArrowTransition());
+        }
+
         if (Screen.width > Screen.height || VirtualTextField)
         {
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
             {
-                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.39f, 0.24f, -2.16f), t);
+                // _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.39f, 0.24f, -2.16f), t);
+                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.0f, 0.23f, -2.18f), t);
                 yield return null;
 
-                if (_Virtual_Camera.transform.position == new Vector3(0.39f, 0.24f, -2.16f))
+                if (_Virtual_Camera.transform.position == new Vector3(0.0f, 0.23f, -2.18f))
                     break;
             }
 
@@ -1906,14 +2216,19 @@ public class UIHandler : MonoBehaviour
 
     public IEnumerator HomeEntertainmentTransition()
     {
+        if (VirtualTextField)
+        {
+            StartCoroutine(ArrowTransition());
+        }
+
         if (Screen.width > Screen.height || VirtualTextField)
         {
             for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / 100)
             {
-                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.39f, 0.24f, -2.16f), t);
+                _Virtual_Camera.transform.position = Vector3.MoveTowards(_Virtual_Camera.transform.position, new Vector3(0.0f, 0.23f, -2.18f), t);
                 yield return null;
 
-                if (_Virtual_Camera.transform.position == new Vector3(0.39f, 0.24f, -2.16f))
+                if (_Virtual_Camera.transform.position == new Vector3(0.0f, 0.23f, -2.18f))
                     break;
             }
 
@@ -2072,6 +2387,8 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon.SetActive(false);
         _SpaceMaxTechnology_Icon.SetActive(true);
         _SpaceMaxTechnology_Hide_Icon.SetActive(false);
+        _AllaroundTechnology_Icon.SetActive(true);
+        _AllaroundTechnology_Hide_Icon.SetActive(false);
 
 
         _ExploreBixby_Icon_Portrait.SetActive(false);
@@ -2091,6 +2408,8 @@ public class UIHandler : MonoBehaviour
         _HomeConnection_Hide_Icon_Portrait.SetActive(false);
         _SpaceMaxTechnology_Icon_Portrait.SetActive(true);
         _SpaceMaxTechnology_Hide_Icon_Portrait.SetActive(false);
+        _AllaroundTechnology_Icon_Portrait.SetActive(true);
+        _AllaroundTechnology_Hide_Icon_Portrait.SetActive(false);
 
         _CloseHomeConnectionIcon.SetActive(false);
         _CloseHomeConnectionIcon_Portrait.SetActive(false);
@@ -2099,11 +2418,22 @@ public class UIHandler : MonoBehaviour
 
     [SerializeField]
     GameObject Arrow_L, Arrow_B, Arrow_H;
-    
+    [SerializeField]
+    GameObject ArrowBack_L, ArrowBack_B, ArrowBack_H;
+
     bool dimensionClick = false;
     public void OnDimensionClicked()
     {
+        // ResetActions();
         dimensionClick = !dimensionClick;
+        if(Screen.width > Screen.height)
+        {
+            _capacityCallout_LandScape.SetActive(dimensionClick);
+        }
+        else
+        {
+            _capacityCallout_Portrait.SetActive(dimensionClick);
+        }
 
         if (dimensionClick == true)
         {
@@ -2119,13 +2449,16 @@ public class UIHandler : MonoBehaviour
             // Arrow_H.SetActive(false);
             // Arrow_L.SetActive(false);
         }
-
+         if(GoogleAnalyticsAdapter.Instance != null)
+        {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("Dimension_button","Clicked");
+        }
     }
 
 
     [SerializeField]
     GameObject InfoButton_Landscape, InfoButton_Portrait, InfoPanel_Landscape, InfoPanel_Portrait;
-    bool clickInfo = false;
+    public bool clickInfo = false;
 
     public IEnumerator InfoButtonTransition()
     {
@@ -2137,12 +2470,12 @@ public class UIHandler : MonoBehaviour
             {
                 for (float t = 0.0f; t < 1.0f; t += Time.deltaTime)
                 {
-                    InfoButton_Landscape.GetComponent<RectTransform>().localPosition = Vector3.Lerp(InfoButton_Landscape.GetComponent<RectTransform>().localPosition, new Vector3(-289.36f, 0f, 0f), t); //-164.75f
+                    InfoButton_Landscape.GetComponent<RectTransform>().localPosition = Vector3.Lerp(InfoButton_Landscape.GetComponent<RectTransform>().localPosition, new Vector3(-305f, 0f, 0f), t); //-164.75f
                     yield return null;
 
-                    if ( Mathf.Abs(InfoButton_Landscape.GetComponent<RectTransform>().localPosition.x + 289.36f) < 1f )
+                    if ( Mathf.Abs(InfoButton_Landscape.GetComponent<RectTransform>().localPosition.x + 305f) < 1f )
                     {
-                        InfoButton_Landscape.GetComponent<RectTransform>().localPosition = new Vector3(-289.36f, 0f, 0f);
+                        InfoButton_Landscape.GetComponent<RectTransform>().localPosition = new Vector3(-305f, 0f, 0f);
                         break;
                     }
                        
@@ -2166,6 +2499,7 @@ public class UIHandler : MonoBehaviour
         }
         else
         {
+
             if (Screen.width > Screen.height || VirtualTextField)
             {
                 for (float t = 0.0f; t < 1.0f; t += Time.deltaTime)
@@ -2204,10 +2538,91 @@ public class UIHandler : MonoBehaviour
     public void InfoButtonClicked()
     {
         StartCoroutine(InfoButtonTransition());
+
+         if(GoogleAnalyticsAdapter.Instance != null)
+        {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("Info_Button","Clicked");
+        }
     }
 
     public void BuyNowButtonClicked()
     {
         Application.OpenURL("https://www.samsung.com/in/microsite/side-by-side-refrigerators/");
     }
+
+
+    [SerializeField]
+    GameObject _ARInstruction_Panel, ReadInstruction_Button, Skip_Button, PlaceFloor_Button, Zoom_Button, Tap_Button;
+    [SerializeField]
+    GameObject _LoadingBar, RefrigeratorTransparent, RefrigeratorOriginal;
+
+    public void ARInstructionsClicked(int Button_ID)
+    {
+        if(Button_ID == 0)
+        {
+            _ARInstruction_Panel.SetActive(true);
+            ReadInstruction_Button.SetActive(false);
+            Skip_Button.SetActive(false);
+            PlaceFloor_Button.SetActive(true);
+            Zoom_Button.SetActive(false);
+            Tap_Button.SetActive(false);
+        }  
+        else if(Button_ID == 1)
+        {
+            _ARInstruction_Panel.SetActive(false);
+            ReadInstruction_Button.SetActive(false);
+            Skip_Button.SetActive(false);
+            PlaceFloor_Button.SetActive(false);
+            Zoom_Button.SetActive(false);
+            Tap_Button.SetActive(false);
+
+            _LoadingBar.SetActive(true);
+            RefrigeratorTransparent.SetActive(true);
+            RefrigeratorOriginal.SetActive(false);
+
+            // ShiftPositionSceneObjectScript.verticalPanAR = true;
+        }
+        else if (Button_ID == 2)
+        {
+            _ARInstruction_Panel.SetActive(true);
+            ReadInstruction_Button.SetActive(false);
+            Skip_Button.SetActive(false);
+            PlaceFloor_Button.SetActive(false);
+            Zoom_Button.SetActive(true);
+            Tap_Button.SetActive(false);
+
+            _LoadingBar.SetActive(true);
+            RefrigeratorTransparent.SetActive(true);
+            RefrigeratorOriginal.SetActive(false);
+
+            // ShiftPositionSceneObjectScript.verticalPanAR = true;
+        }
+        else if (Button_ID == 3)
+        {
+            _ARInstruction_Panel.SetActive(true);
+            ReadInstruction_Button.SetActive(false);
+            Skip_Button.SetActive(false);
+            PlaceFloor_Button.SetActive(false);
+            Zoom_Button.SetActive(false);
+            Tap_Button.SetActive(true);
+        }
+        else if (Button_ID == 4)
+        {
+            _ARInstruction_Panel.SetActive(false);
+            ReadInstruction_Button.SetActive(false);
+            Skip_Button.SetActive(false);
+            PlaceFloor_Button.SetActive(false);
+            Zoom_Button.SetActive(false);
+            Tap_Button.SetActive(false);
+        }
+
+
+         if(GoogleAnalyticsAdapter.Instance != null)
+         {
+            GoogleAnalyticsAdapter.Instance.googleAnalyticsLogEvent("Dimension_Button", "Clicked","AR_View",Button_ID);
+         }
+    }
+
+    
+
 }

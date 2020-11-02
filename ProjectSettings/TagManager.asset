@@ -5,6 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - sceneobject
+  - Ground
+  - Sphere
+  - Surface_Front
+  - Surface_Back
+  - Surface_Left
+  - Surface_Right
+  - wall
   layers:
   - Default
   - TransparentFX
@@ -16,7 +23,7 @@ TagManager:
   - 
   - Spot Light exception
   - Door
-  - 
+  - Inside Objects
   - 
   - 
   - 

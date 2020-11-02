@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,12 +17,18 @@ public class ObjectRotate : MonoBehaviour
 
     [SerializeField]
     GameObject Arrow_L, Arrow_B, Arrow_H;
+    [SerializeField]
+    GameObject ArrowBack_L, ArrowBack_B, ArrowBack_H;
 
+    [SerializeField]
+    GameObject UIHandlerObject;
+    UIHandler UIHandlerScript;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        UIHandlerScript = UIHandlerObject.GetComponent<UIHandler>();
+
     }
 
     // Update is called once per frame
@@ -57,17 +64,35 @@ public class ObjectRotate : MonoBehaviour
             }
         }
 
-        if(dimensionClick == true && (transform.eulerAngles.y%360 > 180f && transform.eulerAngles.y%360 < 360))
+        if(dimensionClick == true && (transform.eulerAngles.y%360 > 90f && transform.eulerAngles.y%360 < 270))
         {
             Arrow_B.SetActive(false);
             Arrow_H.SetActive(false);
             Arrow_L.SetActive(false);
+
+            ArrowBack_B.SetActive(false);
+            ArrowBack_H.SetActive(false);
+            ArrowBack_L.SetActive(false);
         }
-        else if(dimensionClick == true)
+        else if(dimensionClick == true && (transform.eulerAngles.y % 360 < 90f && transform.eulerAngles.y % 360 >= 0f))
         {
             Arrow_B.SetActive(true);
             Arrow_H.SetActive(true);
             Arrow_L.SetActive(true);
+
+            ArrowBack_B.SetActive(false);
+            ArrowBack_H.SetActive(false);
+            ArrowBack_L.SetActive(false);
+        }
+        else if (dimensionClick == true && (transform.eulerAngles.y % 360 > 270 && transform.eulerAngles.y % 360 < 360f))
+        {
+            ArrowBack_B.SetActive(true);
+            ArrowBack_H.SetActive(true);
+            ArrowBack_L.SetActive(true);
+
+            Arrow_B.SetActive(false);
+            Arrow_H.SetActive(false);
+            Arrow_L.SetActive(false);
         }
 
     }
@@ -100,9 +125,15 @@ public class ObjectRotate : MonoBehaviour
             Arrow_H.SetActive(false);
             Arrow_L.SetActive(false);
 
+            ArrowBack_B.SetActive(false);
+            ArrowBack_H.SetActive(false);
+            ArrowBack_L.SetActive(false);
+
             resetRotation = true;
         }
     }
+
+
 
     public void OnFoodManagementButtonClicked()
     {

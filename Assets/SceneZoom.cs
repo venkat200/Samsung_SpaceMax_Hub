@@ -11,8 +11,8 @@ public class SceneZoom : MonoBehaviour
     // ScaleRange.x defines min scale and ScaleRange.y defines max scale
     public Vector2 ScaleRange;
 
-    public float ScrollSensitvity = 3f;
-    public float TouchScrollSensitivity = 1.5f;
+    public float ScrollSensitvity = 2f;
+    public float TouchScaleSensitivityFactor = 1.5f;
 
     [SerializeField]
     GameObject ScaleRangeSelectionObject;
@@ -40,7 +40,7 @@ public class SceneZoom : MonoBehaviour
         UIHandlerScript = ScaleRangeSelectionObject.GetComponent<UIHandler>();
         if (UIHandlerScript.VirtualTextField)
         {
-            _SceneObject.transform.localScale = new Vector3(4f, 4f, 4f);
+            _SceneObject.transform.localScale = new Vector3(2f, 2f, 2f);
             ScaleRange = new Vector2(2f, 7f);
         }
         else
@@ -83,14 +83,14 @@ public class SceneZoom : MonoBehaviour
                 if (_diff_move > _diff_Start)
                 {
                     if (_SceneObject.transform.localScale.y < ScaleRange.y)
-                        _SceneObject.transform.localScale += new Vector3(1f, 1f, 1f) * Time.deltaTime * 0.5f * TouchScrollSensitivity;
+                        _SceneObject.transform.localScale += new Vector3(1f, 1f, 1f) * Time.deltaTime * 0.5f * TouchScaleSensitivityFactor;
 
                     _diff_Start = _diff_move;
                 }
                 else if (_diff_move < _diff_Start)
                 {
                     if (_SceneObject.transform.localScale.y > ScaleRange.x)
-                        _SceneObject.transform.localScale -= new Vector3(1f, 1f, 1f) * Time.deltaTime * 0.5f * TouchScrollSensitivity;
+                        _SceneObject.transform.localScale -= new Vector3(1f, 1f, 1f) * Time.deltaTime * 0.5f * TouchScaleSensitivityFactor;
 
                     _diff_Start = _diff_move;
                 }
